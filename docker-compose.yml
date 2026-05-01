@@ -1,32 +1,29 @@
 version: '3.8'
 
 services:
-  backend-java:
-    build: ./backend-java
-    ports:
-      - "5000:5000"
-    environment:
-      - SPRING_PROFILES_ACTIVE=prod
-      - ML_SERVICE_URL=http://ml-service:8000
-    networks:
-      - luxiq-network
-
   ml-service:
-    build: ./ml-service
+    build: .
     ports:
       - "8000:8000"
-    networks:
-      - luxiq-network
-
-  frontend:
-    build: ./frontend
-    ports:
-      - "3000:80"
+    environment:
+      - API_HOST=0.0.0.0
+      - API_PORT=8000
+      - SPRING_BOOT_API_URL=http://host.docker.internal:5000
+      - FRONTEND_URL=http://localhost:5173
+    volumes:
+      - ./models:/app/models
+      - ./logs:/app/logs
+    restart: unless-stopped
     depends_on:
-      - backend-java
-    networks:
-      - luxiq-network
+      - redis
 
-networks:
-  luxiq-network:
-    driver: bridge
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+
+volumes:
+  redis_data:

@@ -1,93 +1,209 @@
-# SmartCart The Future of Luxury E-commerce 💎✨
+# LuxIQ ML Service
 
-<div align="center">
-  <img src="https://img.shields.io/badge/Spring%20Boot-3.2.0-brightgreen?style=for-the-badge&logo=springboot" />
-  <img src="https://img.shields.io/badge/React-18.2.0-blue?style=for-the-badge&logo=react" />
-  <img src="https://img.shields.io/badge/FastAPI-0.104.1-009688?style=for-the-badge&logo=fastapi" />
-  <img src="https://img.shields.io/badge/XGBoost-1.7.6-orange?style=for-the-badge&logo=anaconda" />
-  <img src="https://img.shields.io/badge/Stripe-Integrated-purple?style=for-the-badge&logo=stripe" />
-</div>
+A FastAPI-based microservice providing intelligent features for the LuxIQ e-commerce platform.
 
----
+## Features
 
-LuxIQ is not just an online store; it's an **AI-driven ecosystem** designed for the high-end boutique market. By blending cutting-edge **Natural Language Processing**, **Predictive Analytics**, and a **Hyper-Modern UI**, LuxIQ delivers an executive shopping experience that anticipates user needs and automates business logic.
+### 🤖 Machine Learning Capabilities
+- **Content-based Filtering**: TF-IDF on product descriptions + tags → cosine similarity
+- **Collaborative Filtering**: User-item matrix on purchase history
+- **Homepage Personalisation**: Personalized product recommendations
+- **Trending Products**: Most purchased/viewed products in last 7 days
+- **AI Search Suggestions**: Autocomplete with NLP-based query understanding
+- **Dynamic Pricing Signals**: Price drop/selling fast indicators
+- **Model Retraining**: Scheduled weekly retraining on latest data
 
-## 🌟 Elite Features
+### 📊 API Endpoints
 
-| Feature | Description | Technology |
-| :--- | :--- | :--- |
-| **LUMI AI Assistant** | 🤖 24/7 personal shopper for product help & tracking. | Claude-3 / Anthropic |
-| **Smart Size Guide** | 📏 Precision fit recommendations via user metrics. | FastAPI / Pandas |
-| **Price Predictor** | 📉 ML-driven insights on when to buy for the best value. | XGBoost / Python |
-| **Verified Reviews** | 🛡️ Authentic photo-backed feedback from real owners. | Cloudinary / JPA |
-| **Inventory Vault** | 🔔 Real-time low-stock alerts & command center. | Glassmorphism UI |
+#### Recommendations
+- `POST /recommendations` - Get personalized recommendations
+- `GET /homepage/{userId}` - Get personalized homepage
 
----
+#### Search & Discovery
+- `POST /search/autocomplete` - AI-powered search autocomplete
+- `GET /products/trending` - Get trending products
 
-## 🏗️ System Architecture
+#### Pricing Intelligence
+- `POST /products/pricing-signals/{productId}` - Get dynamic pricing signals
 
-```mermaid
-graph TD
-    User((User)) <--> Frontend[React Boutique Frontend]
-    Frontend <--> Backend[Spring Boot Core Service]
-    Backend <--> DB[(H2/PostgreSQL)]
-    Backend <--> ML[FastAPI ML Service]
-    ML <--> XGB[XGBoost Model]
-    Backend <--> AI[Anthropic Claude API]
-    Backend <--> Mail[SMTP/SendGrid]
-    Frontend <--> Stripe[Stripe Elements]
-```
+#### Model Management
+- `POST /retrain-models` - Trigger model retraining
+- `GET /models/status` - Get model status
+- `GET /health` - Health check
 
----
+## 🚀 Quick Start
 
-## 🚀 Experience the Platform
-
-### 🛠️ Quick Installation
-
-#### 🐍 1. ML Intelligence Layer (Python)
+### Option 1: Direct Python
 ```bash
+# Clone and setup
 cd ml-service
+python3 -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
 pip install -r requirements.txt
-python main.py
+
+# Download language models
+python -c "import nltk; nltk.download('punkt'); nltk.download('stopwords'); nltk.download('wordnet')"
+python -m spacy download en_core_web_sm
+
+# Start the service
+uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 ```
 
-#### ☕ 2. Strategic Backend (Java)
+### Option 2: Docker
 ```bash
-cd backend-java
-./mvnw spring-boot:run
+# Build and run
+docker-compose up --build
 ```
 
-#### ⚛️ 3. Boutique Frontend (React)
+### Option 3: Startup Script
 ```bash
-cd frontend
-npm install
-npm run dev
+# Make executable and run
+chmod +x start.sh
+./start.sh
 ```
 
----
+## 🔧 Configuration
 
-## ⚙️ Control Configuration
+Environment variables (see `.env` file):
+- `API_HOST`: Service host (default: 0.0.0.0)
+- `API_PORT`: Service port (default: 8000)
+- `SPRING_BOOT_API_URL`: Backend API URL (default: http://localhost:5000)
+- `FRONTEND_URL`: Frontend URL (default: http://localhost:5173)
 
-To unlock full platform potential, configure your `application.properties` and `.env` files:
+## 📈 Model Details
 
-> [!IMPORTANT]
-> **Required API Keys:**
-> - `anthropic.api.key`: Powering the LUMI AI concierge.
-> - `stripe.secret.key`: Enabling secure, global transactions.
-> - `spring.mail.*`: Driving automated customer relationship emails.
+### TF-IDF Vectorizer
+- Max features: 5000
+- N-gram range: (1, 2)
+- Stop words: English
+- Min document frequency: 2
+- Max document frequency: 0.8
 
----
+### Collaborative Filtering
+- Algorithm: Truncated SVD
+- Components: 50
+- Random state: 42
 
-## 🎨 Design Philosophy
-LuxIQ adheres to the **"Minimalist Obsidian"** design system, featuring:
-- **Dynamic Themes**: Instant toggle between *Silk & Indigo* (Light) and *Midnight Obsidian* (Dark).
-- **Glassmorphism**: Elegant transparency and blur effects for a premium feel.
-- **Micro-Interactions**: Smooth, purposeful animations that guide the user journey.
+### Similarity Thresholds
+- Content-based: 0.1 minimum relevance
+- Search autocomplete: 0.1 minimum similarity
 
----
+## 🔄 Model Retraining
 
-<div align="center">
-  <p><i>Crafted for the next generation of digital luxury.</i></p>
-  <img src="https://img.shields.io/badge/Status-Beta-yellow?style=flat-square" />
-  <img src="https://img.shields.io/badge/Security-Encrypted-success?style=flat-square" />
-</div>
+Models are automatically retrained weekly on:
+- Latest product data
+- User interaction history
+- Purchase patterns
+- Search queries
+
+Manual retraining:
+```bash
+curl -X POST http://localhost:8000/retrain-models
+```
+
+## 📊 Monitoring
+
+### Health Check
+```bash
+curl http://localhost:8000/health
+```
+
+### Model Status
+```bash
+curl http://localhost:8000/models/status
+```
+
+## 🔗 Integration
+
+### Spring Boot Backend
+The ML service integrates with the Spring Boot backend via HTTP calls. See `MLController.java` for implementation details.
+
+### Frontend Components
+- `MLRecommendations.tsx` - Personalized product recommendations
+- `AISearch.tsx` - AI-powered search with autocomplete
+- `PricingSignals.tsx` - Dynamic pricing indicators
+
+## 🧪 Testing
+
+### Test Recommendations
+```bash
+curl -X POST http://localhost:8000/recommendations \
+  -H "Content-Type: application/json" \
+  -d '{
+    "user_id": "test_user",
+    "num_recommendations": 5,
+    "recommendation_type": "content_based"
+  }'
+```
+
+### Test Search Autocomplete
+```bash
+curl -X POST http://localhost:8000/search/autocomplete \
+  -H "Content-Type: application/json" \
+  -d '{
+    "query": "laptop",
+    "limit": 5
+  }'
+```
+
+## 📝 Logs
+
+Logs are written to `ml_service.log` and include:
+- Model initialization
+- API requests/responses
+- Error details
+- Retraining status
+
+## 🐛 Troubleshooting
+
+### Common Issues
+1. **Port conflicts**: Ensure port 8000 is available
+2. **Backend connection**: Verify Spring Boot is running on port 5000
+3. **Memory issues**: Increase system RAM for large datasets
+4. **Model loading**: Check if language models are downloaded
+
+### Debug Mode
+```bash
+uvicorn main:app --host 0.0.0.0 --port 8000 --reload --log-level debug
+```
+
+## 🚀 Production Deployment
+
+### Docker Production
+```bash
+# Build production image
+docker build -t luxiq-ml-service .
+
+# Run with production settings
+docker run -d \
+  --name luxiq-ml \
+  -p 8000:8000 \
+  -e SPRING_BOOT_API_URL=http://backend:5000 \
+  luxiq-ml-service
+```
+
+### Environment Variables
+Set these in production:
+- `LOG_LEVEL=INFO`
+- `RETRAINING_SCHEDULE=weekly`
+- `API_HOST=0.0.0.0`
+
+## 📚 Dependencies
+
+- FastAPI 0.104.1
+- scikit-learn 1.3.2
+- pandas 2.1.3
+- numpy 1.25.2
+- nltk 3.8.1
+- spacy 3.7.2
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create feature branch
+3. Add tests
+4. Submit pull request
+
+## 📄 License
+
+MIT License - see LICENSE file for details
