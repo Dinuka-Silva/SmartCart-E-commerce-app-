@@ -1,5 +1,4 @@
-# LuxIQ ML Service
-
+# SmartCart-E-commerce-app-
 A FastAPI-based microservice providing intelligent features for the LuxIQ e-commerce platform.
 
 ## Features
